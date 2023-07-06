@@ -12,6 +12,7 @@ def read_args():
     parser.add_argument("--posdep", action="store_true", default=False, help="task name")
     parser.add_argument("--lemmatize", action="store_true", default=False, help="task name")
     parser.add_argument("--tokenize", action="store_true", default=False, help="task name")
+    parser.add_argument("--embedding", type=str, default='xlm-roberta-base', help="task name")
     parser.add_argument("--save_dir", type=str, default='data/save_dir', help="directory for saving trained model")
     parser.add_argument("--train_conllu_fpath", type=str, default='data/ssj/sl_ssj-ud-train.conllu', help="annotations file in CONLLU format  for training")
     parser.add_argument("--dev_conllu_fpath", type=str, default='data/ssj/sl_ssj-ud-dev.conllu', help="annotations file in CONLLU format for development")
@@ -33,6 +34,7 @@ def main():
                 'train_conllu_fpath': args.train_conllu_fpath,  # annotations file in CONLLU format for training
                 'dev_txt_fpath': args.dev_txt_fpath,  # raw text file
                 'dev_conllu_fpath': args.dev_conllu_fpath  # annotations file in CONLLU format for development
+#                'batch_size': 4
             }
         )
 
@@ -47,7 +49,8 @@ def main():
             'task': 'posdep', # task name
             'save_dir': args.save_dir, # directory for saving trained model
             'train_conllu_fpath': args.train_conllu_fpath, # annotations file in CONLLU format  for training
-            'dev_conllu_fpath': args.dev_conllu_fpath # annotations file in CONLLU format for development
+            'dev_conllu_fpath': args.dev_conllu_fpath, # annotations file in CONLLU format for development
+            'embedding': args.embedding
             }
         )
         # start training
@@ -61,7 +64,8 @@ def main():
             'task': 'lemmatize', # task name
             'save_dir': args.save_dir, # directory for saving trained model
             'train_conllu_fpath': args.train_conllu_fpath, # annotations file in CONLLU format  for training
-            'dev_conllu_fpath': args.dev_conllu_fpath # annotations file in CONLLU format for development
+            'dev_conllu_fpath': args.dev_conllu_fpath, # annotations file in CONLLU format for development
+            'embeddings': args.embeddings
             }
         )
         # start training
