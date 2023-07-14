@@ -33,7 +33,8 @@ def main():
                 'train_txt_fpath': args.train_txt_fpath,  # raw text file
                 'train_conllu_fpath': args.train_conllu_fpath,  # annotations file in CONLLU format for training
                 'dev_txt_fpath': args.dev_txt_fpath,  # raw text file
-                'dev_conllu_fpath': args.dev_conllu_fpath  # annotations file in CONLLU format for development
+                'dev_conllu_fpath': args.dev_conllu_fpath,  # annotations file in CONLLU format for development
+                'embedding': args.embedding
 #                'batch_size': 4
             }
         )
@@ -65,7 +66,7 @@ def main():
             'save_dir': args.save_dir, # directory for saving trained model
             'train_conllu_fpath': args.train_conllu_fpath, # annotations file in CONLLU format  for training
             'dev_conllu_fpath': args.dev_conllu_fpath, # annotations file in CONLLU format for development
-            'embeddings': args.embeddings
+            'embeddings': args.embedding
             }
         )
         # start training
