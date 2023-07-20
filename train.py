@@ -2,7 +2,12 @@ import argparse
 
 import trankit
 import time
+from trankit.utils.mwt_lemma_utils.seq2seq_utils import VOCAB_PREFIX, SOS, EOS
 
+
+trankit.utils.mwt_lemma_utils.seq2seq_vocabs.EMPTY = SOS
+trankit.utils.mwt_lemma_utils.seq2seq_vocabs.ROOT = EOS
+trankit.utils.mwt_lemma_utils.seq2seq_vocabs.VOCAB_PREFIX = VOCAB_PREFIX
 
 def read_args():
     parser = argparse.ArgumentParser()
