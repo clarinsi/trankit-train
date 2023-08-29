@@ -1,7 +1,7 @@
 import argparse
 
-import trankit
 import time
+import trankit
 from trankit.utils.mwt_lemma_utils.seq2seq_utils import VOCAB_PREFIX, SOS, EOS
 
 
@@ -88,7 +88,7 @@ def main():
             'save_dir': args.save_dir, # directory for saving trained model
             'train_conllu_fpath': args.train_conllu_fpath, # annotations file in CONLLU format  for training
             'dev_conllu_fpath': args.dev_conllu_fpath, # annotations file in CONLLU format for development
-            'embeddings': args.embedding
+            'embedding': args.embedding
             }
         )
         # start training
