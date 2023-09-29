@@ -9,10 +9,11 @@ trankit.utils.mwt_lemma_utils.seq2seq_vocabs.EMPTY = SOS
 trankit.utils.mwt_lemma_utils.seq2seq_vocabs.ROOT = EOS
 trankit.utils.mwt_lemma_utils.seq2seq_vocabs.VOCAB_PREFIX = VOCAB_PREFIX
 
+
 def read_args():
     parser = argparse.ArgumentParser()
 
-    ## Required parameters
+    # Required parameters
     parser.add_argument("--category", type=str, default='customized', help="pipeline category")
     parser.add_argument("--posdep", action="store_true", default=False, help="task name")
     parser.add_argument("--mwt", action="store_true", default=False, help="task name")
@@ -39,23 +40,6 @@ def main():
                 'train_txt_fpath': args.train_txt_fpath,  # raw text file
                 'train_conllu_fpath': args.train_conllu_fpath,  # annotations file in CONLLU format for training
                 'dev_txt_fpath': args.dev_txt_fpath,  # raw text file
-                'dev_conllu_fpath': args.dev_conllu_fpath,  # annotations file in CONLLU format for development
-                'embedding': args.embedding
-#                'batch_size': 4
-            }
-        )
-
-        # start training
-        trainer.train()
-
-    if args.mwt:
-        # initialize a trainer for the task
-        trainer = trankit.TPipeline(
-            training_config={
-                'category': args.category,  # pipeline category
-                'task': 'mwt',  # task name
-                'save_dir': args.save_dir,  # directory for saving trained model
-                'train_conllu_fpath': args.train_conllu_fpath,  # annotations file in CONLLU format  for training
                 'dev_conllu_fpath': args.dev_conllu_fpath,  # annotations file in CONLLU format for development
                 'embedding': args.embedding
             }

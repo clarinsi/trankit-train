@@ -1,6 +1,4 @@
 import argparse
-
-import trankit
 import time
 
 from trankit import Pipeline, trankit2conllu
