@@ -3,6 +3,7 @@ import time
 
 from trankit import Pipeline, trankit2conllu
 from trankit.utils import CoNLL, get_ud_score, get_ud_performance_table
+import trankit
 
 
 def read_args():
@@ -39,15 +40,18 @@ def main():
     #     # embedding version that we use for training our customized pipeline, by default, it is `xlm-roberta-base`
     # )
     if args.raw_input:
-        with open(args.test_conllu_fpath, 'r', encoding='utf-8') as rf:
+        with open(args.test_txt_fpath, 'r', encoding='utf-8') as rf:
             gold_tokens = rf.read()
     else:
         infile = open(args.test_conllu_fpath)
-        gold_tokens = CoNLL.load_conll(infile)
+        gold_tokens = CoNLL.load_conll(infile, ignore_gapping=False)
         infile.close()
         gold_tokens = [[tok[1] for tok in sent] for sent in gold_tokens]
     p = Pipeline(lang=args.category, cache_dir=args.save_dir, embedding=args.embedding)
+    execution_time_start = time.time()
     all_trankit = p(gold_tokens)
+    print("Execution time:")
+    print("--- %s seconds ---" % (time.time() - execution_time_start))
     all_conllu = trankit2conllu(all_trankit)
     with open(args.pred_conllu_fpath, 'w') as wf:
         wf.write(all_conllu)

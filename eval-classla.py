@@ -22,6 +22,7 @@ def read_args():
     parser.add_argument("--test_conllu_fpath", type=str, default='data/ssj/sl_ssj-ud-test.conllu', help="annotations file in CONLLU format for testing")
     parser.add_argument("--test_txt_fpath", type=str, default='data/ssj/test.txt', help="raw text file")
     parser.add_argument("--pred_conllu_fpath", type=str, default='data/ssj/predictions.conllu', help="predicted conllu")
+    parser.add_argument("--classla_spoken", action="store_true", default=False, help="task name")
     return parser.parse_args()
 
 
@@ -52,7 +53,17 @@ def main():
     infile.close()
     gold_tokens = [[tok[1] for tok in sent] for sent in gold_tokens]
     classla.download('sl', type=args.type)
-    nlp = classla.Pipeline('sl', type=args.type, tokenize_pretokenized=True)
+    if args.classla_spoken:
+        nlp = classla.Pipeline('sl', pos_use_lexicon=True,
+                               pos_model_path='/home/luka/Development/CJVT/trankit-train/data/classla-spoken-models/pos/baseline+ssj500+janes',
+                               lemma_model_path='/home/luka/Development/CJVT/trankit-train/data/classla-spoken-models/lemma/baseline+ssj500_lemmatizer.pt',
+                               depparse_model_path='/home/luka/Development/CJVT/trankit-train/data/classla-spoken-models/depparse/baseline+ssj',
+                               pos_pretrain_path='/home/luka/Development/CJVT/trankit-train/data/classla-spoken-models/sl_ssj.pretrain.pt',
+                               depparse_pretrain_path='/home/luka/Development/CJVT/trankit-train/data/classla-spoken-models/sl_ssj.pretrain.pt',
+                               type=args.type, tokenize_pretokenized=True)
+    else:
+        nlp = classla.Pipeline('sl', pos_use_lexicon=True, type=args.type, tokenize_pretokenized=True)
+
     doc = nlp(gold_tokens)
 
     with open(args.pred_conllu_fpath, 'w') as wf:
