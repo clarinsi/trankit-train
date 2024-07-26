@@ -1,0 +1,5 @@
+Bootstrap: docker
+From: nvcr.io/nvidia/pytorch:21.09-py3
+
+%post
+    pip install trankit conllu six
