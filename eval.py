@@ -55,6 +55,8 @@ def main():
     all_conllu = trankit2conllu(all_trankit)
     with open(args.pred_conllu_fpath, 'w') as wf:
         wf.write(all_conllu)
+
+    # possible errors if multiple roots in a sentence (add handfix via intermediate interaction)
     if not args.raw_input:
         score = get_ud_score(args.test_conllu_fpath, args.pred_conllu_fpath)
         print(get_ud_performance_table(score))

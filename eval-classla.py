@@ -62,7 +62,7 @@ def main():
                                depparse_pretrain_path='/home/luka/Development/CJVT/trankit-train/data/classla-spoken-models/sl_ssj.pretrain.pt',
                                type=args.type, tokenize_pretokenized=True)
     else:
-        nlp = classla.Pipeline('sl', pos_use_lexicon=True, type=args.type, tokenize_pretokenized=True)
+        nlp = classla.Pipeline('sl', type=args.type, tokenize_pretokenized=True)
 
     doc = nlp(gold_tokens)
 
