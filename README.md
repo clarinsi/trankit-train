@@ -5,7 +5,9 @@ For a detailed understanding of the inner workings and Trankit library options, 
 
 ## Published models
 
-The models were trained on the successive versions of the SSJ UD treebank of written Slovenian, the SST UD treebank of spoken Slovenian, and a combined dataset incorporating both. For production use, we recommend the latest model, [Trankit SSJ+SST-2.15](http://hdl.handle.net/11356/1997), which achieves state-of-the-art performance for both written and spoken Slovenian (.
+The models were trained on the successive versions of the SSJ UD treebank of written Slovenian, the SST UD treebank of spoken Slovenian, and a combined dataset incorporating both. 
+
+For production use, we recommend the latest model, [Trankit SSJ+SST-2.15](http://hdl.handle.net/11356/1997), which achieves state-of-the-art performance for both written and spoken Slovenian.
 
 | Release date              | Short name             | Training Data                                                                                                                                                                                                                                        | Model (CLARIN.SI repository)                                   |
 |------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
