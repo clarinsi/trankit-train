@@ -50,3 +50,6 @@ dict_output = p(pretokenized_list)
 # Convert output from dictionary to CONLLu format
 conllu_output = trankit2conllu(dict_output)
 ```
+
+## Acknowledgement
+This work was supported by Slovenian Research and Innovation Agency through research project [SPOT: A Treebank-Driven Approach to the Study of Spoken Slovenian (Z6-4617)](https://spot.ff.uni-lj.si/) and research programme Language Resources and Technologies for Slovene (P6-0411). Infrastructural support was provided by the Centre for Language Resources and Technologies at the University of Ljubljana ([CJVT](https://www.cjvt.si/en/)).
