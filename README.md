@@ -64,8 +64,8 @@ and parsing (LAS) performance on the written <b>SSJ-2.12</b> test set and the sp
     <tr>
       <th rowspan="2">Model</th>
       <th rowspan="2">Model type</th>
-      <th colspan="4">SSJ-2.12 (written)</th>
-      <th colspan="4">SST-2.15 (spoken)</th>
+      <th colspan="4">SSJ-2.12-test (written)</th>
+      <th colspan="4">SST-2.15-test (spoken)</th>
     </tr>
     <tr>
       <th>Lemmas</th><th>UPOS</th><th>XPOS</th><th>LAS</th>
