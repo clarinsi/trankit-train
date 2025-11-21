@@ -84,9 +84,9 @@ and parsing (LAS) performance on the written <b>SSJ-2.12</b> test set and the sp
       <td>97.90</td><td>98.79</td><td>96.71</td><td>86.54</td>
     </tr>
     <tr style="font-weight: bold;">
-      <td>Trankit-SSJ+SST-2.15</td><td>Written+Spoken</td>
-      <td>98.10</td><td>99.17</td><td>98.27</td><td>95.36</td>
-      <td>98.85</td><td>98.97</td><td>98.02</td><td>87.93</td>
+      <td><b>Trankit-SSJ+SST-2.15</b></td><td><b>Written+Spoken</b></td>
+      <td><b>98.10</b></td><td><b>99.17</b></td><td><b>98.27</b></td><td><b>95.36</b></td>
+      <td><b>98.85</b></td><td><b>98.97</b></td><td><b>98.02</b></td><td><b>87.93</b></td>
     </tr>
   </tbody>
 </table>
