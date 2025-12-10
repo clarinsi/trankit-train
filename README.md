@@ -55,7 +55,7 @@ conllu_output = trankit2conllu(dict_output)
 # Performance
 <p>
 The table below reports lemmatization (Lemmas), tagging (UPOS), full morphological analysis (XPOS) 
-and parsing (LAS) performance on the written <b>SSJ-2.12</b> test set and the spoken 
+and parsing (LAS) performance on the written <b>SSJ-2.14</b> test set and the spoken 
 <b>SST-2.15</b> test set.
 </p>
 
@@ -64,7 +64,7 @@ and parsing (LAS) performance on the written <b>SSJ-2.12</b> test set and the sp
     <tr>
       <th rowspan="2">Model</th>
       <th rowspan="2">Model type</th>
-      <th colspan="4">SSJ-2.12-test (written)</th>
+      <th colspan="4">SSJ-2.14-test (written)</th>
       <th colspan="4">SST-2.15-test (spoken)</th>
     </tr>
     <tr>
@@ -74,7 +74,7 @@ and parsing (LAS) performance on the written <b>SSJ-2.12</b> test set and the sp
   </thead>
   <tbody>
     <tr>
-      <td>Trankit-SSJ-2.12</td><td>Written</td>
+      <td>Trankit-SSJ-2.14</td><td>Written</td>
       <td>98.07</td><td>99.12</td><td>98.24</td><td>95.48</td>
       <td>98.16</td><td>95.33</td><td>93.93</td><td>79.14</td>
     </tr>
