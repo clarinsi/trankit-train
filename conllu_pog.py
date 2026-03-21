@@ -3,8 +3,11 @@ Replaces standardized word forms (FORM column) with spoken/colloquial pronunciat
 variants from the MISC field (pronunciation=X). Used to create pronunciation-based
 variants of CoNLLu datasets for training Trankit models on colloquial Slovenian speech.
 
-Optionally produces a shuffled combined file (standardized + pronunciation sentences)
-via --combined_output_fpath, which is recommended for fine-tuning to avoid recency bias.
+Optionally produces a combined file (standardized + pronunciation) via
+--combined_output_fpath. Only sentences that have at least one pronunciation
+annotation are duplicated (i.e. SST sentences); SSJ sentences with no pronunciation
+tags are included once. Trankit's DataLoader already shuffles training data, so no
+additional shuffling is applied here.
 
 Usage:
     # Create pronunciation variant only
@@ -12,7 +15,7 @@ Usage:
         --conllu_input_fpath data/ssj2.14+sst2.15-dev3/sl_ssj+sst-ud-train-formatted.conllu \
         --conllu_output_fpath data/ssj2.14+sst2.15-dev3/sl_ssj+sst-ud-train-pog.conllu
 
-    # Also create shuffled combined file (stan + pog)
+    # Also create combined file (SSJ stan + SST stan + SST pog)
     python conllu_pog.py \
         --conllu_input_fpath data/ssj2.14+sst2.15-dev3/sl_ssj+sst-ud-train-formatted.conllu \
         --conllu_output_fpath data/ssj2.14+sst2.15-dev3/sl_ssj+sst-ud-train-pog.conllu \
@@ -23,7 +26,6 @@ import argparse
 import copy
 import logging
 import os
-import random
 import time
 
 from conllu import parse_incr
@@ -45,9 +47,7 @@ def read_args():
     parser.add_argument('--conllu_output_fpath', type=str, required=True,
                         help='Output CoNLLu file with pronunciation forms (-pog)')
     parser.add_argument('--combined_output_fpath', type=str, default=None,
-                        help='Optional: output shuffled combined file (standardized + pronunciation)')
-    parser.add_argument('--seed', type=int, default=42,
-                        help='Random seed for shuffling combined output (default: 42)')
+                        help='Optional: output combined file (SSJ stan + SST stan + SST pog)')
     return parser.parse_args()
 
 
@@ -55,7 +55,6 @@ def get_pronunciation(misc):
     '''Extract pronunciation value from token MISC field (dict or None).'''
     if misc is None:
         return None
-    # conllu library parses MISC as an OrderedDict for key=value pairs
     if isinstance(misc, dict):
         return misc.get('pronunciation')
     return None
@@ -75,11 +74,20 @@ def is_regular_token(token_id):
     return isinstance(token_id, int)
 
 
+def has_pronunciation(tokenlist):
+    '''Return True if any regular token in the sentence has a pronunciation annotation.'''
+    return any(
+        get_pronunciation(token['misc']) is not None
+        for token in tokenlist
+        if is_regular_token(token['id'])
+    )
+
+
 def apply_pronunciation(tokenlist):
     '''
     Return a deep copy of tokenlist with FORM replaced by pronunciation variant
     and # text = metadata reconstructed from the new forms.
-    For tokens without a pronunciation annotation (e.g. SSJ portion), FORM is kept as-is.
+    For tokens without a pronunciation annotation, FORM is kept as-is.
     '''
     tl = copy.deepcopy(tokenlist)
     text_parts = []
@@ -128,13 +136,21 @@ def main():
     logger.info('Wrote %d sentences', len(pog_sentences))
 
     if args.combined_output_fpath:
-        combined = stan_sentences + pog_sentences
-        random.seed(args.seed)
-        random.shuffle(combined)
+        # Only duplicate sentences that have pronunciation annotations (SST).
+        # SSJ sentences (no pronunciation tags) are included once as-is.
+        sst_mask = [has_pronunciation(tl) for tl in stan_sentences]
+        sst_stan = [tl for tl, is_sst in zip(stan_sentences, sst_mask) if is_sst]
+        sst_pog  = [tl for tl, is_sst in zip(pog_sentences,  sst_mask) if is_sst]
+        ssj_stan = [tl for tl, is_sst in zip(stan_sentences, sst_mask) if not is_sst]
+
+        n_ssj = len(ssj_stan)
+        n_sst = len(sst_stan)
+        combined = ssj_stan + sst_stan + sst_pog
         logger.info(
-            'Writing shuffled combined output (%d sentences, seed=%d): %s',
-            len(combined), args.seed, args.combined_output_fpath
+            'Combined: %d SSJ (stan only) + %d SST stan + %d SST pog = %d total sentences',
+            n_ssj, n_sst, n_sst, len(combined)
         )
+        logger.info('Writing combined output: %s', args.combined_output_fpath)
         write_sentences(combined, args.combined_output_fpath)
         logger.info('Done.')
 
