@@ -1,5 +1,5 @@
 import argparse
-
+import logging
 import time
 import trankit
 from trankit.utils.mwt_lemma_utils.seq2seq_utils import VOCAB_PREFIX, SOS, EOS
@@ -8,6 +8,13 @@ from trankit.utils.mwt_lemma_utils.seq2seq_utils import VOCAB_PREFIX, SOS, EOS
 trankit.utils.mwt_lemma_utils.seq2seq_vocabs.EMPTY = SOS
 trankit.utils.mwt_lemma_utils.seq2seq_vocabs.ROOT = EOS
 trankit.utils.mwt_lemma_utils.seq2seq_vocabs.VOCAB_PREFIX = VOCAB_PREFIX
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s',
+    datefmt='%H:%M:%S',
+)
+logger = logging.getLogger(__name__)
 
 
 def read_args():
@@ -30,7 +37,14 @@ def read_args():
 
 def main():
     args = read_args()
+    start_time = time.time()
+    tasks = [t for t in ['tokenize', 'posdep', 'lemmatize'] if getattr(args, t)]
+    logger.info(f"Starting training: {', '.join(tasks) or 'none'}")
+    logger.info(f"  embedding: {args.embedding}")
+    logger.info(f"  save_dir:  {args.save_dir}")
+
     if args.tokenize:
+        logger.info("--- tokenize: initializing ---")
         # initialize a trainer for the task
         trainer = trankit.TPipeline(
             training_config={
@@ -45,10 +59,12 @@ def main():
             }
         )
 
-        # start training
+        logger.info("--- tokenize: training ---")
         trainer.train()
+        logger.info("--- tokenize: done ---")
 
     if args.posdep:
+        logger.info("--- posdep: initializing ---")
         # initialize a trainer for the task
         trainer = trankit.TPipeline(
             training_config={
@@ -61,10 +77,12 @@ def main():
                 'batch_size': 12
             }
         )
-        # start training
+        logger.info("--- posdep: training ---")
         trainer.train()
+        logger.info("--- posdep: done ---")
 
     if args.lemmatize:
+        logger.info("--- lemmatize: initializing ---")
         # initialize a trainer for the task
         trainer = trankit.TPipeline(
             training_config={
@@ -76,12 +94,12 @@ def main():
             'embedding': args.embedding
             }
         )
-        # start training
+        logger.info("--- lemmatize: training ---")
         trainer.train()
+        logger.info("--- lemmatize: done ---")
 
 
 if __name__ == "__main__":
     start_time = time.time()
     main()
-    print("Total:")
-    print("--- %s seconds ---" % (time.time() - start_time))
+    logger.info(f"All done. Total: {time.time() - start_time:.0f}s")
