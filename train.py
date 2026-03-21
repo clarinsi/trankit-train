@@ -1,6 +1,18 @@
 import argparse
 import logging
 import time
+
+# Fix dead HuggingFace CDN URLs in adapter_transformers 1.0.1 bundled with trankit 1.1.1
+def _fixed_hf_bucket_url(identifier, filename, use_cdn=False, mirror=None):
+    return f"https://huggingface.co/{identifier}/resolve/main/{filename}"
+
+import trankit.adapter_transformers.modeling_utils as _mu
+import trankit.adapter_transformers.configuration_utils as _cu
+import trankit.adapter_transformers.tokenization_utils as _tu
+_mu.hf_bucket_url = _fixed_hf_bucket_url
+_cu.hf_bucket_url = _fixed_hf_bucket_url
+_tu.hf_bucket_url = _fixed_hf_bucket_url
+
 import trankit
 from trankit.utils.mwt_lemma_utils.seq2seq_utils import VOCAB_PREFIX, SOS, EOS
 
