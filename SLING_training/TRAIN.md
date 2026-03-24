@@ -51,7 +51,7 @@ cp -r trankit-train/SLING_training/trankit_contents .
 
 # Build Singularity container (bootstraps from Docker, no sudo needed)
 mkdir -p containers
-singularity build containers/trankit.sif trankit-train/SLING_training/trankit.def
+singularity build --fakeroot containers/trankit.sif trankit-train/SLING_training/trankit.def
 
 # Transfer and unzip training data via scp, then:
 cd trankit-train/data/
