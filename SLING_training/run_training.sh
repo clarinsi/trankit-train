@@ -29,6 +29,5 @@ if [ ! -f "$CONFIG_FILE" ]; then
     exit 1
 fi
 
-cp "$CONFIG_FILE" trankit_content.sh
 echo "Activated config: $CONFIG"
-./trankit_sbatch.sh
+./trankit_sbatch.sh "$CONFIG_FILE"

@@ -15,5 +15,5 @@ LANG=C.UTF-8
 LC_ALL=C.UTF-8
 
 srun \
-  trankit_content.sh
+  "$TRANKIT_CONFIG"
 
