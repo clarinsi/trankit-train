@@ -1,6 +1,17 @@
 import argparse
 import time
 
+# Fix dead HuggingFace CDN URLs in adapter_transformers 1.0.1 bundled with trankit 1.1.1
+def _fixed_hf_bucket_url(identifier, filename, use_cdn=False, mirror=None):
+    return f"https://huggingface.co/{identifier}/resolve/main/{filename}"
+
+import trankit.adapter_transformers.modeling_utils as _mu
+import trankit.adapter_transformers.configuration_utils as _cu
+import trankit.adapter_transformers.tokenization_utils as _tu
+_mu.hf_bucket_url = _fixed_hf_bucket_url
+_cu.hf_bucket_url = _fixed_hf_bucket_url
+_tu.hf_bucket_url = _fixed_hf_bucket_url
+
 from trankit import Pipeline, trankit2conllu
 from trankit.utils import CoNLL, get_ud_score, get_ud_performance_table
 import trankit
@@ -18,6 +29,32 @@ def read_args():
     parser.add_argument("--test_txt_fpath", type=str, default='data/ssj/test.txt', help="raw text file")
     parser.add_argument("--pred_conllu_fpath", type=str, default='data/ssj/predictions.conllu', help="predicted conllu")
     return parser.parse_args()
+
+
+def _fix_multiple_roots(conllu_str):
+    """Fix sentences where Trankit predicted multiple root tokens (HEAD=0).
+    Keeps the first root; re-attaches subsequent roots to the first root token
+    with deprel='dep'."""
+    fixed_lines = []
+    first_root_id = None
+    for line in conllu_str.splitlines(keepends=True):
+        if line.strip() == '':
+            first_root_id = None
+            fixed_lines.append(line)
+            continue
+        if line.startswith('#'):
+            fixed_lines.append(line)
+            continue
+        parts = line.rstrip('\n').split('\t')
+        if len(parts) >= 8 and parts[6] == '0':
+            if first_root_id is None:
+                first_root_id = parts[0]
+            else:
+                parts[6] = first_root_id
+                parts[7] = 'dep'
+                line = '\t'.join(parts) + '\n'
+        fixed_lines.append(line)
+    return ''.join(fixed_lines)
 
 
 def main():
@@ -53,10 +90,10 @@ def main():
     print("Execution time:")
     print("--- %s seconds ---" % (time.time() - execution_time_start))
     all_conllu = trankit2conllu(all_trankit)
+    all_conllu = _fix_multiple_roots(all_conllu)
     with open(args.pred_conllu_fpath, 'w') as wf:
         wf.write(all_conllu)
 
-    # possible errors if multiple roots in a sentence (add handfix via intermediate interaction)
     if not args.raw_input:
         score = get_ud_score(args.test_conllu_fpath, args.pred_conllu_fpath)
         print(get_ud_performance_table(score))

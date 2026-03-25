@@ -21,6 +21,24 @@ trankit.utils.mwt_lemma_utils.seq2seq_vocabs.EMPTY = SOS
 trankit.utils.mwt_lemma_utils.seq2seq_vocabs.ROOT = EOS
 trankit.utils.mwt_lemma_utils.seq2seq_vocabs.VOCAB_PREFIX = VOCAB_PREFIX
 
+# Fix trankit 1.1.1 bug: CoNLL.conll_as_string strips trailing '_' fields, producing
+# fewer than 10 columns, which the UD evaluator rejects. Pad each row to 10 fields.
+from trankit.utils.conll import CoNLL as _CoNLL
+
+@staticmethod
+def _fixed_conll_as_string(doc):
+    _FIELD_NUM = 10
+    return_string = ""
+    for sent in doc:
+        for ln in sent:
+            while len(ln) < _FIELD_NUM:
+                ln.append('_')
+            return_string += ("\t".join(ln[:_FIELD_NUM]) + "\n")
+        return_string += "\n"
+    return return_string
+
+_CoNLL.conll_as_string = _fixed_conll_as_string
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s %(levelname)s %(message)s',
